@@ -1,0 +1,17 @@
+{
+    "name": "EP.U3D.LIBRARY.NET",
+    "rootNamespace": "",
+    "references": [
+        "EP.U3D.LIBRARY.BASE",
+        "EP.U3D.LIBRARY.EVT"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
