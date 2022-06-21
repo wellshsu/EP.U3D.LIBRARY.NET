@@ -138,13 +138,13 @@ namespace EP.U3D.LIBRARY.NET
                 request.SetRequestHeader("UID", uid == -1 ? Constants.CGI_SERVER_UID.ToString() : uid.ToString());
                 request.SetRequestHeader("RID", rid.ToString());
                 yield return request.SendWebRequest();
-                if (request.result == UnityWebRequest.Result.Success)
+                if (request.responseCode == 200)
                 {
                     callback?.Invoke(null, request.downloadHandler.data);
                 }
                 else
                 {
-                    callback?.Invoke(request.error, null);
+                    callback?.Invoke(request.error, request.downloadHandler.data);
                 }
             }
         }
