@@ -101,15 +101,10 @@ namespace EP.U3D.LIBRARY.NET
             Instance.Notify(evt);
         }
 
-        public static void SendMsg(int id, byte[] body, int uid = -1, int rid = -1, int server = 1)
+        public static void SendMsg(int id, byte[] body, int uid = 0, int rid = 0, int server = 0)
         {
             NetConnection connection;
-            bool v = connections.TryGetValue(server, out connection);
-            if (id != 0)
-            {
-                Helper.LogError(v + " : " + server + " + " + connection + " + " + id);
-            }
-            if (v)
+            if (connections.TryGetValue(server, out connection))
             {
                 NetPacket packet = new NetPacket(id, body.Length);
                 packet.Body = body;
@@ -119,12 +114,12 @@ namespace EP.U3D.LIBRARY.NET
             }
         }
 
-        public static void SendCgi(int id, byte[] body, Action<string, byte[]> callback = null, int uid = -1, int rid = -1, string host = null)
+        public static void SendCgi(int id, byte[] body, Action<string, byte[]> callback = null, int uid = 0, int rid = 0, string host = null)
         {
             Loom.StartCR(DoCgi(id, body, callback, uid, rid, host));
         }
 
-        private static IEnumerator DoCgi(int id, byte[] body, Action<string, byte[]> callback = null, int uid = -1, int rid = -1, string host = null)
+        private static IEnumerator DoCgi(int id, byte[] body, Action<string, byte[]> callback = null, int uid = 0, int rid = 0, string host = null)
         {
             if (string.IsNullOrEmpty(host)) host = Constants.CGI_SERVER_URL;
             using (UnityWebRequest request = new UnityWebRequest(host, "POST"))
@@ -132,8 +127,8 @@ namespace EP.U3D.LIBRARY.NET
                 request.uploadHandler = new UploadHandlerRaw(body);
                 request.downloadHandler = new DownloadHandlerBuffer();
                 request.SetRequestHeader("Content-Type", "application/octet-stream");
-                request.SetRequestHeader("AccessToken", Constants.CGI_ACCESS_TOKEN);
-                request.SetRequestHeader("RefreshToken", Constants.CGI_REFRESH_TOKEN);
+                if (!string.IsNullOrEmpty(Constants.CGI_ACCESS_TOKEN)) request.SetRequestHeader("AccessToken", Constants.CGI_ACCESS_TOKEN);
+                if (!string.IsNullOrEmpty(Constants.CGI_REFRESH_TOKEN)) request.SetRequestHeader("RefreshToken", Constants.CGI_REFRESH_TOKEN);
                 request.SetRequestHeader("CID", id.ToString());
                 request.SetRequestHeader("UID", uid == -1 ? Constants.CGI_SERVER_UID.ToString() : uid.ToString());
                 request.SetRequestHeader("RID", rid.ToString());
