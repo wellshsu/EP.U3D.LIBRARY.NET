@@ -19,11 +19,11 @@ namespace EP.U3D.LIBRARY.NET
 {
     public class NetManager : EvtManager
     {
-        protected static NetManager _instance;
+        protected static new NetManager _instance;
 
-        protected static Dictionary<int, NetConnection> connections = new Dictionary<int, NetConnection>();
+        protected static  Dictionary<int, NetConnection> connections = new Dictionary<int, NetConnection>();
 
-        public static NetManager Instance
+        public static new NetManager Instance
         {
             get
             {
