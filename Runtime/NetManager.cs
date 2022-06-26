@@ -9,10 +9,10 @@
 //---------------------------------------------------------------------//
 using EP.U3D.LIBRARY.BASE;
 using EP.U3D.LIBRARY.EVT;
+using EP.U3D.LIBRARY.JSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace EP.U3D.LIBRARY.NET
@@ -21,7 +21,7 @@ namespace EP.U3D.LIBRARY.NET
     {
         protected static new NetManager _instance;
 
-        protected static  Dictionary<int, NetConnection> connections = new Dictionary<int, NetConnection>();
+        protected static Dictionary<int, NetConnection> connections = new Dictionary<int, NetConnection>();
 
         public static new NetManager Instance
         {
@@ -101,6 +101,11 @@ namespace EP.U3D.LIBRARY.NET
             Instance.Notify(evt);
         }
 
+        public static void SendMsg(int id, ProtoBuf.IExtensible body, int uid = 0, int rid = 0, int server = 0)
+        {
+            SendMsg(id, EncodePB(body), uid, rid, server);
+        }
+
         public static void SendMsg(int id, byte[] body, int uid = 0, int rid = 0, int server = 0)
         {
             NetConnection connection;
@@ -112,6 +117,42 @@ namespace EP.U3D.LIBRARY.NET
                 packet.ServerID = rid;
                 connection.Send(packet);
             }
+        }
+
+        public static object DecodeMsg(Type type, Evt evt)
+        {
+            return DecodePB(type, evt.Param as byte[]);
+        }
+
+        public static object DecodePB(Type type, byte[] buffer)
+        {
+            using (var ms = new System.IO.MemoryStream(buffer))
+            {
+                var obj = ProtoBuf.Serializer.NonGeneric.Deserialize(type, ms);
+                ms.Close();
+                return obj;
+            }
+        }
+
+        public static byte[] EncodePB(ProtoBuf.IExtensible msg)
+        {
+            using (var ms = new System.IO.MemoryStream())
+            {
+                ProtoBuf.Serializer.Serialize(ms, msg);
+                byte[] buf = ms.ToArray();
+                ms.Close();
+                return buf;
+            }
+        }
+
+        public static object DecodeJson(string content, Type type)
+        {
+            return JsonMapper.ToObject(type, content);
+        }
+
+        public static string EncodeJson(object obj)
+        {
+            return JsonMapper.ToJson(obj);
         }
 
         public static void SendCgi(int id, byte[] body, Action<string, byte[]> callback = null, int uid = 0, int rid = 0, string host = null)

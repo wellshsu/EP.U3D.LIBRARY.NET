@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "EP.U3D.LIBRARY.BASE",
-        "EP.U3D.LIBRARY.EVT"
+        "EP.U3D.LIBRARY.EVT",
+        "EP.U3D.LIBRARY.JSON"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
