@@ -101,7 +101,7 @@ namespace EP.U3D.LIBRARY.NET
             Instance.Notify(evt);
         }
 
-        public static void SendMsg(int id, ProtoBuf.IExtensible body, int uid = 0, int rid = 0, int server = 0)
+        public static void SendMsg(int id, ProtoBuf.IMessage body, int uid = 0, int rid = 0, int server = 0)
         {
             SendMsg(id, EncodePB(body), uid, rid, server);
         }
@@ -134,7 +134,7 @@ namespace EP.U3D.LIBRARY.NET
             }
         }
 
-        public static byte[] EncodePB(ProtoBuf.IExtensible msg)
+        public static byte[] EncodePB(ProtoBuf.IMessage msg)
         {
             using (var ms = new System.IO.MemoryStream())
             {
